@@ -16,7 +16,29 @@ class Clock extends Component {
 
     getTimeRemaining(birthday) {
         var bday = new Date(birthday);
-        let today = new Date(); 
+        var today = new Date(); 
+
+        const currentMonth = today.getMonth();
+        const birthMonth = bday.getMonth();
+
+        if(birthMonth > currentMonth) {
+            bday.setFullYear(today.getFullYear());
+        }
+        else if (birthMonth < currentMonth) {
+            bday.setFullYear(today.getFullYear() + 1);
+        }
+        else if(birthMonth == currentMonth) {
+            const birthDay = bday.getDate();
+            const currentDay = today.getDate();
+            if(birthDay > currentDay) {
+                bday.setFullYear(today.getFullYear());
+            }
+            else if (birthDay < currentDay) {
+                bday.setFullYear(today.getFullYear() + 1);
+            }
+        }
+
+
 
         var distance = bday.getTime() - today.getTime();
 
@@ -33,6 +55,17 @@ class Clock extends Component {
         }
     }
 
+    getAge = function() {
+        var bday = new Date(this.birthday);
+        let today = new Date();
+
+        var distance = today.getTime() - bday.getTime();
+        var daysOld = Math.floor(distance / (1000 * 60 * 60 * 24 ));
+        var yearsOld = Number((daysOld/365).toFixed(0));
+
+        return yearsOld
+    }.bind(this)
+
     componentDidMount() {
         this.timer = setInterval(() => {
             const timeRemaining = this.getTimeRemaining(this.birthday)
@@ -44,11 +77,16 @@ class Clock extends Component {
     render() {
         const data = this.state.timeRemaining
         return (
-            <div> 
-                <div> DAYS {data.days} </div>
-                <div> HRS {data.hours}</div>
-                <div> MINS {data.minutes} </div>
-                <div> SECS {data.seconds} </div>
+            <div>
+                <div> 
+                    <div> DAYS {data.days} </div>
+                    <div> HRS {data.hours}</div>
+                    <div> MINS {data.minutes} </div>
+                    <div> SECS {data.seconds} </div>
+                </div>
+                <div>
+                    {<h4> remaining until you are {this.getAge()} </h4>}
+                </div>
             </div>
         )
     }
